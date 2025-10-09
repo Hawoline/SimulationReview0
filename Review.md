@@ -3,3 +3,8 @@
 ```java
 Simulation sim = new Simulation();
 ```
+
+Непонятное название переменной. слушает команды пользователя в меню? 
+```java
+CommandListener commandListener = new CommandListener(sim);
+```
