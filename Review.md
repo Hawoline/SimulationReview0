@@ -8,3 +8,12 @@ Simulation sim = new Simulation();
 ```java
 CommandListener commandListener = new CommandListener(sim);
 ```
+Поля без модификаторов доступа. 
+```java
+    GameMap gameMap;
+    MoveCounter moveCounter;
+    MessagePrinter printer;
+    GameMapConsoleRenderer gameMapConsoleRenderer;
+    List<Action> initActions;
+    List<Action> turnActions;
+```
