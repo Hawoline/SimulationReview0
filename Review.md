@@ -132,3 +132,7 @@ public class Predator extends Creature<Predator>
 public abstract class Creature {}
 public class Predator extends Creature {}
 ```
+
+Также заметил много разных мелких Action. Не дроби так сильно классы. Много классов также плохо, как и большой класс.
+## Итог
+Поизучай ООП, наследование. 
