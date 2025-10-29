@@ -65,11 +65,70 @@ em.collectEntitiesToActionByInterfaceClass()
 ```java
 Set<Entry<Class<? extends Entity>, Integer>> set = em.getRespawnableEntitiesAndCounts();
 ```
-Указания ключевых слов в именовании плохая практика. Можно попробовать назвать `putEntitiesToAction`
+## EntityManager
+Не возвращай null.
 ```java
-em.collectEntitiesToActionByInterfaceClass()
+public Creature getCreature(Coordinate coordinate) {
+    if (entities.get(coordinate) instanceof Creature<?> creature) {
+        return creature;
+    } else {
+        return null;
+    }
+}
 ```
-Указания ключевых слов в именовании плохая практика. Можно попробовать назвать `putEntitiesToAction`
+## PathFinder
+Сразу выходи из функции, если не выполняется условия для работы метода. Так меньше вложенность.
 ```java
-em.collectEntitiesToActionByInterfaceClass()
+    private void retracePath() {
+        if (targetCoordinate != null) {
+            path.add(targetCoordinate);
+            Coordinate prev = breadthFirstSearch.get(targetCoordinate);
+
+            while (prev != breadthFirstSearch.get(null)) {
+                path.add(prev);
+                prev = breadthFirstSearch.get(prev);
+            }
+
+            Collections.reverse(path);
+        }
+    }
+```
+## EntityManager
+Это паттерн Фабрика, поэтому лучше переименовать метод на createEntity(). А build юзается в паттерне Builder для создания кастомного или большого объекта. Ну и не возвращай null.
+```java
+    public Entity buildEntity(Class<? extends Entity> clazz) {
+        if (clazz == Predator.class) {
+            return createPredator();
+        } else if (clazz == Herbivore.class) {
+            return createHerbivore();
+        } else if (clazz == Grass.class) {
+            return createGrass();
+        } else if (clazz == Rock.class) {
+            return createRock();
+        } else if (clazz == Tree.class) {
+            return createTree();
+        } else {
+            return null;
+        }
+    }
+```
+Вот тут наоборот билдер. 
+```java
+    private Predator createPredator() {
+        return new Predator()
+                .withDamage(50)
+                .withHP(MAX_HEALTH)
+                .withEdible(Herbivore.class)
+                .withSpeed(1);
+    }
+```
+## Creature, Herbivore и Predator.
+Очень странное решение. Лучше убрать вот это полностью `<T extends Creature<T>>` и вместо T использовать Creature. Ты и так можешь подставлять наследников класса Creature без дженериков. Также в хищнике и травоядном просто наследуешься от Creature.
+```java
+// Плохо
+public abstract class Creature<T extends Creature<T>>
+public class Predator extends Creature<Predator>
+// Хорошо
+public abstract class Creature {}
+public class Predator extends Creature {}
 ```
